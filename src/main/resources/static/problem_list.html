@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>我的 OJ 平台</title>
+    <meta name="description" content="Charcoal is a free Bootstrap 4 UI kit build by @attacomsian at Wired Dots."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <!--Bootstrap 4-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+</head>
+<style>
+    .space-1 {
+        width: 90%;
+    }
+
+    .space-2 {
+        width: 80%;
+    }
+
+    .page {
+        width: 100%;
+    }
+
+    .page button {
+        background: #607d8b;
+        width: 40px;
+        height: 30px;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+    }
+
+    button p {
+        text-align: center;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .page button:hover {
+        cursor: pointer;
+        background-color: red;
+        transition: all 0.3s;
+    }
+
+    .page .side-left {
+        margin-left: 44%;
+    }
+
+    .page .mid {
+        margin: 0 1%;
+        background-color:#3498db;
+    }
+
+    button p a {
+        color: white;
+        font-weight: bold;
+    }
+</style>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top" id="parentA">
+    <a class="navbar-brand font-weight-bold" id="child1" href="#">在线OJ - 题目列表</a>
+    <span class="space-1"></span>
+    <a class="navbar-brand font-weight-bold" href="/logout" id="child2">注销</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topMenu"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="topMenu">
+    </div>
+</nav>
+
+<!--hero section-->
+<section class="bg-hero">
+    <div class="container">
+        <div class="row vh-100">
+            <div class="col-sm-12 my-auto text-center">
+                <h1>在线 OJ</h1>
+                <p class="lead text-capitalize my-4">
+                    基于 SpringBoot 搭建的在线 OJ 平台
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--components-->
+<section class="my-5 pt-5">
+    <div class="container">
+
+        <!-- Tables  -->
+        <div class="row mb-5" id="tables">
+            <div class="col-sm-12">
+                <div class="mt-3 mb-5">
+                    <h3>题目列表</h3>
+                    <table class="table">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>题目</th>
+                            <th>难度</th>
+                            <th>通过</th>
+                        </tr>
+                        </thead>
+                        <tbody id="problem_list">
+                        <!-- <tr>
+                            <td>{{id}}</td>
+                            <td><ErrorAdvice href="/Question/{{id}}">{{title}}</ErrorAdvice></td>
+                            <td>{{star}}</td>
+                        </tr>  -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="page">
+                <button class="side-left"><p id="start"><a id="begin"></a></p></button>
+                <button class="mid"><p id="mid"><a id="middle"></a></p></button>
+                <button class="side-right"><p id="end"><a id="behind"></a></p></button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!--footer-->
+<section class="py-5 bg-dark">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 col-sm-8 offset-sm-2 col-xs-12 text-center">
+                <!-- <h3>Upgrade to Pro Version</h3>
+                <p class="pt-2">
+                    We are working on <b>Charcoal Pro</b> which will be released soon. The pro version
+                    will have ErrorAdvice lot more components, sections, icons, plugins and example pages.
+                    Join the waiting list to get notified when we release it (plus discount code).
+                </p>
+                <ErrorAdvice class="btn btn-warning" href="https://wireddots.com/newsletter">Join Waiting List</ErrorAdvice>
+                <hr class="my-5"/> -->
+                <p class="pt-2 text-muted">
+                    &copy; by czh
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+    bind();
+
+    // 绑定按钮和按钮里的 a 标签, 防止出现 a 标签难以点击的情况
+    function bind() {
+        $(".side-left").click(function () {
+            document.getElementById("begin").click();
+        });
+        $(".mid").click(function () {
+            document.getElementById("middle").click();
+        });
+        $(".side-right").click(function () {
+            document.getElementById("behind").click();
+        });
+    }
+
+    function getList() {
+        $.ajax({
+            url: "/online_oj/list" + location.search,
+            type: "GET",
+            success: function (result) {
+                if (result.data.isAdmin === 1) {
+                    let addProblemA = document.createElement('a');
+                    addProblemA.href = "add_problem.html";
+                    addProblemA.innerHTML = '新增题目';
+                    addProblemA.target = "_blank";
+                    addProblemA.className = 'navbar-brand font-weight-bold';
+                    addProblemA.id = 'child3';
+
+                    let parentNode = document.querySelector('#parentA')
+                    let nextNode = document.querySelector('#child2');
+                    parentNode.insertBefore(addProblemA, nextNode);
+
+                    let deleteProblemA = document.createElement('a');
+                    deleteProblemA.href = "delete_problem.html";
+                    deleteProblemA.innerHTML = '删除题目';
+                    deleteProblemA.target = "_blank";
+                    deleteProblemA.className = 'navbar-brand font-weight-bold';
+
+                    let addNode = document.querySelector('#child3');
+                    parentNode.insertBefore(deleteProblemA, addNode);
+
+                }
+                getProblemList(result.data.problemList, result.data.startPage);
+                getPage(result.data.startPage, result.data.problemList.length, result.data.isLastPage);
+            }
+        })
+    }
+
+    function getProblemList(problems, curPage) {
+        let parent = document.querySelector("#problem_list");
+        let id = (curPage - 1) * 10 + 1;
+
+        for (let problem of problems) {
+            let tr = document.createElement("tr");
+            parent.appendChild(tr);
+
+            let tdId = document.createElement("td");
+            tdId.innerHTML = id;
+            tr.appendChild(tdId);
+
+            let tdTitle = document.createElement("td");
+            let a = document.createElement("a");
+            a.innerHTML = problem.title;
+            a.target = "_blank";
+            let rank = id % 10;
+            if(rank === 0){
+                rank = 10;
+            }
+            a.href = "problem_detail.html" + location.search + "&problemId=" + problem.id + "&problemRank=" + rank;
+            tr.appendChild(tdTitle);
+            tdTitle.appendChild(a);
+
+            let tdLevel = document.createElement("td");
+            tdLevel.innerHTML = problem.level;
+            tr.appendChild(tdLevel);
+
+            let tdImg = document.createElement("td");
+            let isPass = document.createElement("img");
+
+            if (problem.isPass === 1) {
+                isPass.src = "../img/pass.png";
+            } else {
+                isPass.src = "../img/notpass.png";
+            }
+            isPass.height = 30;
+            tdImg.appendChild(isPass);
+            tr.appendChild(tdImg);
+
+            id++;
+        }
+    }
+
+    getList();
+
+    function getPage(curPage, length, isLastPage) {
+        // 左边越界不显示
+        if (curPage === 1) {
+            let buttonOfStart = document.querySelector(".side-left");
+            buttonOfStart.style.display = "none";
+            let buttonOfMid = document.querySelector(".mid");
+            buttonOfMid.style.marginLeft = "49%";
+        }
+
+        // 本页的数据小于指定条数, 说明数据达到边界, 右边越界不显示
+        if (length < 10 || isLastPage === 1) {
+            let pageOfEnd = document.querySelector(".side-right");
+            pageOfEnd.style.display = "none";
+        }
+
+        // 给按钮的 a 标签赋上值和 url
+        let startA = document.querySelector("#begin");
+        let middleA = document.querySelector("#middle");
+        let behindA = document.querySelector("#behind");
+        startA.href = "problem_list.html?startPage=" + (curPage - 1);
+        startA.innerHTML = curPage - 1;
+        middleA.href = "#";
+        middleA.innerHTML = curPage;
+        behindA.href = "problem_list.html?startPage=" + (curPage + 1);
+        behindA.innerHTML = curPage + 1;
+    }
+</script>
+
+</body>
+</html>
